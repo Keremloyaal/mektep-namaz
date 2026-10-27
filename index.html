@@ -61,7 +61,10 @@ main.panel>.timeline-card{width:100%;max-width:100%;min-width:0;margin:22px 0 0;
 main.panel>.timeline-card .timeline-scroll{overflow:visible;padding:0 12px 4px;box-sizing:border-box}
 main.panel>.timeline-card .timeline-track{width:100%;height:132px;margin:0;min-width:0}
 main.panel>.timeline-card .timeline-period{top:22px;height:66px}
-main.panel>.timeline-card .timeline-period span{font-size:10px;overflow:hidden;text-overflow:clip}
+main.panel>.timeline-card .timeline-period span{font-size:10px;overflow:hidden;text-overflow:clip;display:block;padding:0 2px;line-height:1.1;text-align:center}
+main.panel>.timeline-card .timeline-period.tight span{font-size:8px}
+main.panel>.timeline-card .timeline-period.sunrise{z-index:1}
+main.panel>.timeline-card .timeline-period.fajr{z-index:1}
 main.panel>.timeline-card .timeline-kerahat{top:22px;height:66px}
 main.panel>.timeline-card .timeline-hour{top:96px;font-size:9px}
 main.panel>.timeline-card .timeline-marker{height:113px}
@@ -72,7 +75,8 @@ main.panel>.timeline-card .timeline-key{gap:14px}
  main.panel>.timeline-card .timeline-head strong{font-size:13px}
  main.panel>.timeline-card .timeline-scroll{padding:0 10px 3px}
  main.panel>.timeline-card .timeline-track{height:125px}
- main.panel>.timeline-card .timeline-period span{font-size:8px}
+ main.panel>.timeline-card .timeline-period span{font-size:8px;display:block;padding:0 2px;line-height:1.05;text-align:center}
+ main.panel>.timeline-card .timeline-period.tight span{font-size:7px}
  main.panel>.timeline-card .timeline-period{height:63px}
  main.panel>.timeline-card .timeline-kerahat{height:63px}
  main.panel>.timeline-card .timeline-hour-minor{display:none}
@@ -132,7 +136,7 @@ function renderTimeline(){
  let parts=[{id:'night',time:0},{id:'fajr',time:minutesTime(tim.fajr)},{id:'sunrise',time:minutesTime(data.sunrise)},{id:'dhuhr',time:minutesTime(tim.dhuhr)},{id:'asr',time:minutesTime(tim.asr)},{id:'maghrib',time:minutesTime(tim.maghrib)},{id:'isha',time:minutesTime(tim.isha)},{id:'night',time:1440}];
  parts=parts.filter((p,i)=>i===0||i===parts.length-1||(p.time>0&&p.time<1440));parts.sort((a,b)=>a.time-b.time);
  const pos=m=>(Math.max(0,Math.min(1440,m))/1440*TIMELINE_WIDTH);
- let html='';for(let i=0;i<parts.length-1;i++){const st=parts[i],en=parts[i+1];if(en.time<=st.time)continue;const w=pos(en.time)-pos(st.time);html+=`<div class="timeline-period ${st.id}" style="left:${pos(st.time)}%;width:${w}%" title="${timelineName(st.id)}"><span>${w>8?timelineName(st.id):''}</span></div>`}
+ let html='';for(let i=0;i<parts.length-1;i++){const st=parts[i],en=parts[i+1];if(en.time<=st.time)continue;const w=pos(en.time)-pos(st.time);const label=timelineName(st.id);const showLabel=w>4;const tight=w<8?' tight':'';html+=`<div class="timeline-period ${st.id}${tight}" style="left:${pos(st.time)}%;width:${w}%" title="${label}"><span>${showLabel?label:''}</span></div>`}
  function band(a,b,klass,extra=''){if(!Number.isFinite(a)||!Number.isFinite(b))return;const l=Math.max(0,a),r=Math.min(1440,b);if(r<=l)return;html+=`<div class="${klass}" style="left:${pos(l)}%;width:${pos(r)-pos(l)}%" ${extra}></div>`}
  // Hanafi approximate kerahat windows; not astronomical exact.
  band(minutesTime(data.sunrise),minutesTime(data.sunrise)+45,'timeline-kerahat');
